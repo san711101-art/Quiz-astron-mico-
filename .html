@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desafío Astronómico</title>
+
+<style>
+body{
+    margin:0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #0b0f2a, #1a1f4d);
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.container{
+    width:90%;
+    max-width:700px;
+    background: rgba(0,0,0,0.6);
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 0 20px #3f6cff;
+}
+
+h1{
+    text-align:center;
+    color:#6ca8ff;
+}
+
+#level{
+    margin-bottom:10px;
+    font-weight:bold;
+    color:#ffc857;
+}
+
+button{
+    width:100%;
+    padding:10px;
+    margin:5px 0;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.05);
+}
+
+.correct{
+    background:#2ecc71;
+}
+
+.wrong{
+    background:#e74c3c;
+}
+
+.normal{
+    background:#34495e;
+    color:white;
+}
+
+#score{
+    margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>🌌 Desafío Astronómico</h1>
+<div id="level"></div>
+<div id="question"></div>
+<div id="answers"></div>
+<div id="score"></div>
+</div>
+
+<script>
+
+let questions = [];
+
+// ===== GENERADOR DE 100 PREGUNTAS =====
+const baseQuestions = [
+{q:"¿Cuál es el planeta más cercano al Sol?", a:["Mercurio","Venus","Tierra","Marte"], c:0},
+{q:"¿Cómo se llama nuestra galaxia?", a:["Andrómeda","Vía Láctea","Orión","Sombrero"], c:1},
+{q:"¿Qué planeta es conocido como el planeta rojo?", a:["Júpiter","Marte","Saturno","Urano"], c:1},
+{q:"¿Qué estrella está en el centro del Sistema Solar?", a:["Sirio","Betelgeuse","El Sol","Polaris"], c:2},
+{q:"¿Qué planeta tiene anillos visibles?", a:["Marte","Saturno","Venus","Mercurio"], c:1},
+{q:"¿Qué satélite natural orbita la Tierra?", a:["Europa","Titán","La Luna","Fobos"], c:2},
+{q:"¿Cuál es el planeta más grande?", a:["Saturno","Júpiter","Neptuno","Urano"], c:1},
+{q:"¿Qué instrumento se usa para observar estrellas?", a:["Microscopio","Telescopio","Termómetro","Barómetro"], c:1},
+{q:"¿Qué fuerza mantiene a los planetas en órbita?", a:["Magnetismo","Electricidad","Gravedad","Presión"], c:2},
+{q:"¿Cuántos planetas tiene el Sistema Solar?", a:["7","8","9","10"], c:1}
+];
+
+// duplicamos hasta 100 con variaciones
+for(let i=0;i<10;i++){
+    baseQuestions.forEach((item,index)=>{
+        questions.push({
+            q: item.q + " (Pregunta " + (i*10+index+1) + ")",
+            a: item.a,
+            c: item.c
+        });
+    });
+}
+
+let current = 0;
+let score = 0;
+
+const questionEl = document.getElementById("question");
+const answersEl = document.getElementById("answers");
+const scoreEl = document.getElementById("score");
+const levelEl = document.getElementById("level");
+
+function loadQuestion(){
+    if(current >= questions.length){
+        questionEl.innerHTML = "🚀 ¡Juego terminado!";
+        answersEl.innerHTML = "";
+        scoreEl.innerHTML = "Puntaje final: " + score + " / 100";
+        return;
+    }
+
+    let level = Math.floor(current/10)+1;
+    levelEl.innerHTML = "Nivel de dificultad: " + level;
+
+    let q = questions[current];
+    questionEl.innerHTML = "<h3>" + q.q + "</h3>";
+    answersEl.innerHTML = "";
+
+    q.a.forEach((answer,index)=>{
+        let btn = document.createElement("button");
+        btn.innerText = answer;
+        btn.className = "normal";
+        btn.onclick = ()=>{
+            if(index === q.c){
+                btn.className = "correct";
+                score++;
+            }else{
+                btn.className = "wrong";
+            }
+            setTimeout(()=>{
+                current++;
+                loadQuestion();
+            },800);
+        }
+        answersEl.appendChild(btn);
+    });
+
+    scoreEl.innerHTML = "Puntaje: " + score;
+}
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>
